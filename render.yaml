@@ -1,0 +1,21 @@
+services:
+  - type: web
+    name: fitzone-api
+    runtime: node
+    plan: free
+    buildCommand: npm ci && npm run build --workspace=packages/shared && npm run build --workspace=apps/api
+    startCommand: npm run start --workspace=apps/api
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: NODE_VERSION
+        value: 24.17.0
+      - key: TRUST_PROXY_HOPS
+        value: "1"
+      - key: JWT_SECRET
+        generateValue: true
+      - key: MONGODB_URI
+        sync: false
+      - key: WEB_ORIGIN
+        sync: false

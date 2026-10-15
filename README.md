@@ -22,6 +22,13 @@ The API listens on `http://localhost:5000`; the web app is at `http://localhost:
 
 The API and seed scripts load `.env` from the repository root (and fall back to `apps/api/.env`). Copy `.env.example` to the repository-root `.env`, replace the MongoDB URI with a reachable local or Atlas URI, and replace the JWT placeholder with a strong random secret. To enable membership payments, add the Razorpay **Test Mode** API Key ID and Key Secret to `RAZORPAY_KEY_ID` and `RAZORPAY_KEY_SECRET`. Keep the secret server-side; only the Key ID is sent to the browser. The API waits for MongoDB before it starts listening on port 5000; if MongoDB cannot be reached, resolve that connection error before retrying the web login.
 
+## Deploy frontend and API separately
+
+- Deploy the repository's `apps/web` directory to Vercel as a Next.js project. Set the Vercel **Root Directory** to `apps/web`; its `vercel.json` builds the shared workspace package before Next.js.
+- Create a Render Blueprint from the repository root using `render.yaml`. Enter `MONGODB_URI` and the exact frontend origin as `WEB_ORIGIN` (for example, `https://your-project.vercel.app`). Render generates `JWT_SECRET` for the API.
+- The frontend proxies `/api/*` to `https://fitzone-api.onrender.com` by default. If Render assigns a different service URL, set `RENDER_API_URL` in Vercel to that origin only (no `/api` suffix or trailing slash) and redeploy. Browser requests and session cookies stay on the Vercel origin.
+- Add `RAZORPAY_KEY_ID` and `RAZORPAY_KEY_SECRET` to the Render service only if membership payments are enabled. Never expose the Key Secret in Vercel or a `NEXT_PUBLIC_` variable.
+
 The seed command creates public demo credentials for local development and exits without running in production. Before deploying, remove any demo accounts already present in the production database and set unique passwords for all real accounts. Use HTTPS in production and configure the exact `WEB_ORIGIN`; only set `TRUST_PROXY_HOPS` when requests pass through a known reverse proxy.
 
 Run a complete test-mode checkout before switching both Razorpay environment values to **Live Mode** credentials. Razorpay must be configured to capture payments automatically; FitZone activates a renewal only after the server verifies the checkout signature and Razorpay reports the payment as `captured`. Never commit `.env` or put the Key Secret in a `NEXT_PUBLIC_` variable.

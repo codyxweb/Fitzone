@@ -42,7 +42,7 @@ async function start(): Promise<void> {
       await Plan.updateOne({ branchId, name: plan.name }, { $set: { ...plan, branchId, active: true } }, { upsert: true });
     }
   }
-  app.listen(port, () => console.log(`FitZone API listening on port ${port}`));
+  app.listen(port, "0.0.0.0", () => console.log(`FitZone API listening on port ${port}`));
   cron.schedule("0 6 * * *", () => {
     void Location.find({ active: true }).then((locations) => Promise.all(locations.map((location) => runRetentionScan(location.id))))
       .catch((error: unknown) => console.error("Daily retention scan failed", error));
