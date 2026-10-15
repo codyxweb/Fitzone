@@ -3,7 +3,7 @@ const renderApiUrl = (process.env.RENDER_API_URL ?? (process.env.NODE_ENV === "d
 
 if (renderApiUrl) {
   const apiUrl = new URL(renderApiUrl);
-  if (process.env.NODE_ENV === "production" && apiUrl.protocol !== "https:") {
+  if (process.env.NODE_ENV === "production" && apiUrl.protocol !== "https://fitzone-api-jg1y.onrender.com") {
     throw new Error("RENDER_API_URL must use HTTPS in production.");
   }
   if (apiUrl.origin !== renderApiUrl) {
