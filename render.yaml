@@ -3,7 +3,7 @@ services:
     name: fitzone-api
     runtime: node
     plan: free
-    buildCommand: npm ci && npm run build --workspace=packages/shared && npm run build --workspace=apps/api
+    buildCommand: npm ci --include=dev && npm run build --workspace=packages/shared && npm run build --workspace=apps/api
     startCommand: npm run start --workspace=apps/api
     healthCheckPath: /api/health
     envVars:
