@@ -32,12 +32,7 @@ If the browser reports `ERR_CONNECTION_REFUSED` for port 5000 and the API logs a
 
 All seeded accounts use the password `Demo@1234`.
 
-| Role | Email |
-|---|---|
-| Gym owner | `owner@fitzone.in` |
-| Front-desk staff | `staff@fitzone.in` |
-| Trainer | `trainer1@fitzone.in` |
-| Member | `member1@fitzone.in` |
+
 
 Run `npm run seed` to add demo records without replacing existing records. Run `npm run seed:reset` to clear the FitZone collections and reseed them.
 
