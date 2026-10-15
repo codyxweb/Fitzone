@@ -2,8 +2,6 @@ import { NextRequest, NextResponse } from "next/server";
 
 export function middleware(request: NextRequest) {
   const nonce = btoa(crypto.randomUUID());
-  const apiUrl = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:5000/api";
-  const apiOrigin = new URL(apiUrl, request.nextUrl.origin).origin;
   const scriptSources = ["'self'", `'nonce-${nonce}'`, "'strict-dynamic'", "https://checkout.razorpay.com"];
   if (process.env.NODE_ENV !== "production") scriptSources.push("'unsafe-eval'");
   const directives = [
@@ -12,7 +10,7 @@ export function middleware(request: NextRequest) {
     "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
     "font-src 'self' data: https://fonts.gstatic.com",
     "img-src 'self' data: blob: https:",
-    `connect-src 'self' ${apiOrigin} https://*.razorpay.com ws: wss:`,
+    "connect-src 'self' https://*.razorpay.com ws: wss:",
     "frame-src https://*.razorpay.com",
     "frame-ancestors 'none'",
     "form-action 'self' https://*.razorpay.com",

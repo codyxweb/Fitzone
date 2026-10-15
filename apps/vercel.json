@@ -1,0 +1,30 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "services": {
+    "api": {
+      "root": "api",
+      "framework": "express",
+      "entrypoint": "src/app.ts",
+      "buildCommand": "cd ../.. && npm run build --workspace=packages/shared && npm run build --workspace=apps/api"
+    },
+    "web": {
+      "root": "web",
+      "framework": "nextjs",
+      "buildCommand": "cd ../.. && npm run build --workspace=packages/shared && npm run build --workspace=apps/web"
+    }
+  },
+  "rewrites": [
+    {
+      "source": "/api/(.*)",
+      "destination": {
+        "service": "api"
+      }
+    },
+    {
+      "source": "/(.*)",
+      "destination": {
+        "service": "web"
+      }
+    }
+  ]
+}

@@ -5,11 +5,29 @@ import cors from "cors";
 import express, { type ErrorRequestHandler } from "express";
 import mongoose from "mongoose";
 import { z } from "zod";
+import "./config";
 import { allowRoles, requireAuth, signToken, type AuthenticatedRequest } from "./auth";
 import { Attendance, Location, LoginAttempt, MemberIssue, Payment, Plan, Product, RetentionCase, User } from "./models";
 import { runRetentionScan } from "./retention";
 
 const app = express();
+let mongoConnection: Promise<typeof mongoose> | undefined;
+
+async function ensureMongoConnection(): Promise<void> {
+  const uri = process.env.MONGODB_URI;
+  if (!uri) throw new Error("MONGODB_URI is required");
+  if (mongoose.connection.readyState === 1) return;
+  mongoConnection ??= mongoose.connect(uri).catch((error: unknown) => {
+    mongoConnection = undefined;
+    throw error;
+  });
+  await mongoConnection;
+}
+
+app.use((_req, _res, next) => {
+  void ensureMongoConnection().then(() => next(), next);
+});
+
 const webOrigin = process.env.WEB_ORIGIN ?? "http://localhost:3000";
 const cookieSecure = process.env.NODE_ENV === "production";
 const trustProxyHops = process.env.TRUST_PROXY_HOPS;

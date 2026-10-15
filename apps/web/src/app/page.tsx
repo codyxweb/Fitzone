@@ -11,7 +11,7 @@ import {
 import { QRCodeSVG } from "qrcode.react";
 import type { DashboardSummary } from "@fitzone/shared";
 
-const API = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:5000/api";
+const API = "/api";
 let apiLocationId = "";
 function setApiLocation(locationId: string) { apiLocationId = locationId; }
 type User = { id: string; name: string; email: string; role: string };
